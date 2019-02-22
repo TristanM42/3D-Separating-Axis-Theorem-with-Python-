@@ -29,6 +29,9 @@ def RPY_to_Rotation(RPY_list):
 
 
 def collide_check(ref_min, ref_max, _min, _max):
+    if ref_min>_max or ref_max<_min:
+        return False
+    return True
 
 
 def collision_detect(ref_dimention, cuboid_corner):
@@ -50,24 +53,23 @@ def collision_detect(ref_dimention, cuboid_corner):
     y_collide = collide_check(yref_min, yref_max, y_min, y_max)
     z_collide = collide_check(zref_min, zref_max, z_min, z_max)
 
-
-
-    return False
+    return (x_collide and y_collide and z_collide)
 
 def InRef(cuboid_ref, cuboid):
     T_matrix = np.array([[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]])
 
-    cuboid_corner_initial = np.array([cuboid["Dimention"][0]/2, cuboid["Dimention"][1]/2, cuboid["Dimention"][2]/2])
+    cuboid_corner_initial = np.array([cuboid["Dimension"][0]/2, cuboid["Dimension"][1]/2, cuboid["Dimension"][2]/2])
     cuboid_corner_dimension = np.tile(cuboid_corner_initial, (8,1))
     cuboid_corner = cuboid_corner_dimension * T_matrix
     Rotation_ref = RPY_to_Rotation(cuboid_ref["Orientation"])
     Rotation_cub = RPY_to_Rotation(cuboid["Orientation"])
-    Rotation_cub_to_ref = Rotation_cub @ np.linalg.inv(Rotation_ref)
+    Rotation_cub_to_ref = np.linalg.inv(Rotation_cub) @ Rotation_ref
+
     cuboid_corner_after_Rotation = Rotation_cub_to_ref @ cuboid_corner.T
 
-    cuboid_center_to_ref = cuboid["Origin"] - cuboid_ref["Origin"]
+    cuboid_center_to_ref = np.array(cuboid["Origin"]) - np.array(cuboid_ref["Origin"])
     cuboid_corner_new_axis = cuboid_corner_after_Rotation.T + np.tile(cuboid_center_to_ref, (8,1))
-    Collision_or_not = collision_detect(cuboid_ref["Origin"],cuboid_corner_new_axis)
+    Collision_or_not = collision_detect(cuboid_ref["Dimension"],cuboid_corner_new_axis)
     return Collision_or_not
 
 
@@ -75,12 +77,12 @@ def InRef(cuboid_ref, cuboid):
 def collosion_detect(cuboid_1,cuboid_2):
     result1 = InRef(cuboid_1, cuboid_2)   #  In reference of cuboid1
     result2 = InRef(cuboid_2, cuboid_1)   #  In reference of cuboid2
-    return (result1 or result2)
+    return result1 and result2
 
 
 def main():
-    cuboid_1 = {"Origin": [0, 0, 0], "Orientation": [0, 0, 0], "Dimension": [3, 1, 2]}
-    cuboid_2 = {"Origin": [0, 0, 0], "Orientation": [0, 0, 0], "Dimension": [3, 1, 2]}
+    cuboid_1 = {"Origin": [0, 0, 0], "Orientation": [0, 0, 0], "Dimension": [2, 2, 2]}
+    cuboid_2 = {"Origin": [2, 2, 2], "Orientation": [0, 0, 0], "Dimension": [2, 2, 2]}
     print(collosion_detect(cuboid_1,cuboid_2))
 
 if __name__ == '__main__':
