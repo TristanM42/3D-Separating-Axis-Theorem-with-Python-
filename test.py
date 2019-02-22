@@ -4,24 +4,24 @@ from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
 
-plt.rcParams['axes.unicode_minus'] = False
-plt.rcParams['font.sans-serif'] = ['SimHei']
-
-def plot_linear_cube(x, y, z, dx, dy, dz, color='red'):
+def plot_linear_cube(point_set, color='red'):
     fig = plt.figure()
     ax = Axes3D(fig)
-    xx = [x, x, x+dx, x+dx, x]
-    yy = [y, y+dy, y+dy, y, y]
+    xx = point_set[:,0].reshape(-1).tolist()[0]
+    yy = point_set[:,1].reshape(-1).tolist()[0]
+    zz = point_set[:,2].reshape(-1).tolist()[0]
     kwargs = {'alpha': 1, 'color': color}
-    ax.plot3D(xx, yy, [z]*5, **kwargs)
-    ax.plot3D(xx, yy, [z+dz]*5, **kwargs)
-    ax.plot3D([x, x], [y, y], [z, z+dz], **kwargs)
-    ax.plot3D([x, x], [y+dy, y+dy], [z, z+dz], **kwargs)
-    ax.plot3D([x+dx, x+dx], [y+dy, y+dy], [z, z+dz], **kwargs)
-    ax.plot3D([x+dx, x+dx], [y, y], [z, z+dz], **kwargs)
+    ax.plot3D(xx, yy, zz, **kwargs)
+    ax.plot3D([point_set[0,0], point_set[3,0]], [point_set[0,1], point_set[3,1]], [point_set[0,2], point_set[3,2]], **kwargs)
+    ax.plot3D([point_set[4,0], point_set[7,0]], [point_set[4,1], point_set[7,1]], [point_set[4,2], point_set[7,2]], **kwargs)
+
+    for i in range(4):
+        ax.plot3D([point_set[i,0], point_set[i,0]], [point_set[i,1], point_set[i,1]], [point_set[i,2], point_set[4+i,2]], **kwargs)
+
+
+
     plt.title('Cube')
     plt.show()
 
 
-if __name__ == '__main__':
-    plot_linear_cube(0, 0, 0, 100, 120, 130)
+

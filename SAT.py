@@ -1,5 +1,9 @@
 import numpy as np
 import math
+from test import *
+
+
+
 
 '''
     Transform the roll pitch yaw to rotation matrix
@@ -56,7 +60,7 @@ def collision_detect(ref_dimention, cuboid_corner):
     return (x_collide and y_collide and z_collide)
 
 def InRef(cuboid_ref, cuboid):
-    T_matrix = np.array([[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]])
+    T_matrix = np.array([[1,1,1],[1,-1,1],[-1,-1,1],[-1,1,1],[1,1,-1],[1,-1,-1],[-1,-1,-1],[-1,1,-1]])
 
     cuboid_corner_initial = np.array([cuboid["Dimension"][0]/2, cuboid["Dimension"][1]/2, cuboid["Dimension"][2]/2])
     cuboid_corner_dimension = np.tile(cuboid_corner_initial, (8,1))
@@ -69,6 +73,8 @@ def InRef(cuboid_ref, cuboid):
 
     cuboid_center_to_ref = np.array(cuboid["Origin"]) - np.array(cuboid_ref["Origin"])
     cuboid_corner_new_axis = cuboid_corner_after_Rotation.T + np.tile(cuboid_center_to_ref, (8,1))
+    plot_linear_cube(cuboid_corner_new_axis, color='red')
+
     Collision_or_not = collision_detect(cuboid_ref["Dimension"],cuboid_corner_new_axis)
     return Collision_or_not
 
