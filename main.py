@@ -31,7 +31,7 @@ def RPY_to_Rotation(RPY_list):
 # the cubes do not collide with each other in one axis only when the max of one cube is smaller than another cube
 # under the same axis
 def collide_check(ref_min, ref_max, _min, _max):
-    if ref_min>_max or ref_max<_min:
+    if ref_min > _max or ref_max < _min:
         return False
     return True
 
@@ -95,6 +95,10 @@ def Check_Collision(cuboid_ref, cuboid):
     ref_corners = ref_corner @ Rotation_ref + np.array(cuboid_ref["Origin"])
     cub_corners = cuboid_corner @ Rotation_cub + np.array(cuboid["Origin"])
     # Uncomment below to plot current position of two cubes
+    print(ref_corners)
+
+    print(cub_corners)
+    plot_linear_cube(ref_corners, cub_corners, color='red')
 
     Collision_or_not = True
     for PA in Projection_axis:
@@ -110,8 +114,8 @@ def collosion_detect(cuboid_1,cuboid_2):
     return result
 
 def main():
-    cuboid_1 = {"Origin": [0, 0, 0], "Orientation": [0, 0, 0], "Dimension": [2, 2, 2]}
-    cuboid_2 = {"Origin": [1.7, 1.7, 0], "Orientation": [0, 0, np.pi/4], "Dimension": [2, 2, 2]}
+    cuboid_1 = {"Origin": [0, 0, 0], "Orientation": [0, 0, 0], "Dimension": [3, 1, 2]}
+    cuboid_2 = {"Origin": [-0.8, 0, -0.5], "Orientation": [0, 0, 0.2], "Dimension": [1, 0.5, 0.5]}
     print(collosion_detect(cuboid_1,cuboid_2))
 
 if __name__ == '__main__':
